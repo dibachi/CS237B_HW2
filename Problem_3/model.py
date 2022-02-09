@@ -23,7 +23,9 @@ class AccelerationLaw(tf.keras.layers.Layer):
         mu, th = inputs
 
         ########## Your code starts here ##########
-        a = None  # TODO
+        # a = None  # TODO
+        a = self.g * (tf.sin(th) - mu * tf.cos(th))
+        # assert(a>0)
         ########## Your code ends here ##########
 
         # Ensure output acceleration is positive
@@ -59,7 +61,19 @@ def build_model():
     # TODO: Create your neural network and replace the following two layers
     #       according to the given specification.
 
-    p_class = tf.keras.layers.Dense(1, name='p_class')(img_input)
+    # p_class = tf.keras.layers.Dense(1, name='p_class')(img_input)
+    # mu = tf.keras.layers.Dense(1, name='mu')(p_class)
+    base_model = tf.keras.applications.InceptionV3(
+        input_shape=(DIM_IMG[1], DIM_IMG[0], 3),
+        include_top=False,
+        pooling="avg",
+        weights="imagenet",
+        input_tensor=img_input,
+    )
+    # filter_size = 10
+    # con1 = tf.keras.layers.Conv2D(1, (filter_size, filter_size))(img_input)
+    # pooling = tf.keras.layers.AveragePooling2D((DIM_IMG[0]-filter_size, DIM_IMG[1]-filter_size))(con1)
+    p_class = tf.keras.layers.Dense(32, activation='softmax', name='p_class')(base_model.output) #base_model.layers[-1].output actually base_model.output
     mu = tf.keras.layers.Dense(1, name='mu')(p_class)
 
     ########## Your code ends here ##########
@@ -89,6 +103,14 @@ def build_baseline_model():
 
     ########## Your code starts here ##########
     # TODO: Replace the following with your model from build_model().
+    base_model = tf.keras.applications.InceptionV3(
+        input_shape=(DIM_IMG[1], DIM_IMG[0], 3),
+        include_top=False,
+        pooling="avg",
+        weights="imagenet",
+        input_tensor=img_input,
+    )
+    a_pred = tf.keras.layers.Dense(1, name='apred')(base_model.output)
 
     ########## Your code ends here ##########
 
@@ -100,7 +122,8 @@ def loss(a_actual, a_pred):
     """
 
     ########## Your code starts here ##########
-    l = None  # TODO
+    # l = None  # TODO
+    l = tf.linalg.norm(a_actual - a_pred)
     ########## Your code ends here ##########
 
     return l
