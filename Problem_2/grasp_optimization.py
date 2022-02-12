@@ -148,13 +148,10 @@ def precompute_force_closure(grasp_normals, points, friction_coeffs):
     #       wrenches and store them as rows in the matrix F. This matrix will be
     #       captured by the returned force_closure() function.
     F = np.zeros((2*N, M*D))
-    buh = np.vstack((np.identity(N), -np.identity(N)))
-    unit_wrenches = [buh[i,:] for i in range(2*N)]
+    temp = np.vstack((np.identity(N), -np.identity(N)))
+    unit_wrenches = [temp[i,:] for i in range(2*N)]
     for i in range(2*N):
-        # print(f"shape of unit wrenches: {unit_wrenches[0].shape}")
         opt_forces = grasp_optimization(grasp_normals, points, friction_coeffs, unit_wrenches[i])
-        # print(f"shape of x: {x.shape}")
-        # print(len(x))
         F[i,:] = np.reshape(opt_forces, -1)
     print(f"big F: {F}")
 
@@ -177,10 +174,7 @@ def precompute_force_closure(grasp_normals, points, friction_coeffs):
         # f = np.zeros(M*D)
         wrench_p = np.maximum(np.zeros(N), wrench_ext)
         wrench_n = np.maximum(np.zeros(N), -wrench_ext)
-        # print(f"shape of wrench_p: {wrench_p.shape}")
-        # print(f"shape of concat: {np.hstack((wrench_p, wrench_n))}")
         wrench_decomp = np.hstack((wrench_p, wrench_n)) #np.expand_dims(np.hstack((wrench_p, wrench_n)), axis=0)
-        # print(f"shape of wrench decomp: {wrench_decomp.shape}")
         f = wrench_decomp.T @ F 
   
         ########## Your code ends here ##########

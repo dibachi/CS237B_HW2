@@ -123,7 +123,7 @@ def loss(a_actual, a_pred):
 
     ########## Your code starts here ##########
     # l = None  # TODO
-    l = tf.linalg.norm(a_actual - a_pred)
+    l = tf.norm(a_actual - a_pred)
     ########## Your code ends here ##########
 
     return l

@@ -81,10 +81,15 @@ def cone_edges(f, mu):
         p /= np.linalg.norm(p)
         p *= normf
         theta = np.arctan(mu)
-        edges[0] = np.sin(theta)*n + np.cos(theta)*f
-        edges[1] = np.sin(-theta)*n + np.cos(theta)*f
-        edges[2] = np.sin(theta)*p + np.cos(theta)*f
-        edges[3] = np.sin(-theta)*p + np.cos(theta)*f
+        edges[0] = mu*n + f
+        edges[1] = -mu*n + f
+        edges[2] = mu*p + f
+        edges[3] = -mu*p + f
+
+        # edges[0] = np.sin(theta)*n + np.cos(theta)*f
+        # edges[1] = np.sin(-theta)*n + np.cos(theta)*f
+        # edges[2] = np.sin(theta)*p + np.cos(theta)*f
+        # edges[3] = np.sin(-theta)*p + np.cos(theta)*f
 
         ## axis-angle rotation matrix approach
         # n = np.random.randn(3)  # take a random vector
